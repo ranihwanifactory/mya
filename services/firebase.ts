@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { ProjectRequest, PortfolioItem } from '../types';
+import { PortfolioItem } from '../types';
 
 // Configuration provided by user
 const firebaseConfig = {
@@ -35,22 +35,6 @@ export const logout = async () => {
   await signOut(auth);
 };
 
-// Estimator Function
-export const submitProjectRequest = async (data: ProjectRequest) => {
-  try {
-    const docRef = await addDoc(collection(db, "project_requests"), {
-      ...data,
-      createdAt: serverTimestamp(),
-      status: 'pending'
-    });
-    console.log("Document written with ID: ", docRef.id);
-    return { success: true, id: docRef.id };
-  } catch (e) {
-    console.error("Error adding document: ", e);
-    return { success: false, error: e };
-  }
-};
-
 // Portfolio Functions
 export const addPortfolioItem = async (data: PortfolioItem) => {
   try {
@@ -76,7 +60,8 @@ export const getPortfolioItems = async (): Promise<PortfolioItem[]> => {
     return items;
   } catch (e) {
     console.error("Error fetching portfolios: ", e);
-    return [];
+    // Throwing error to let the UI handle permission denied states
+    throw e;
   }
 };
 

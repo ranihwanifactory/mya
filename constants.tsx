@@ -4,35 +4,35 @@ import { ShoppingCart, Rocket, Users, BrainCircuit, Building2, Smartphone, Shiel
 export const APP_CATEGORIES: CategoryDetails[] = [
   {
     id: AppCategory.MVP,
-    label: 'MVP Startup',
+    label: 'MVP 스타트업',
     basePrice: 5000000, // KRW
     description: '핵심 기능에 집중한 빠른 시장 검증용 앱',
     iconName: 'Rocket'
   },
   {
     id: AppCategory.AI_TOOL,
-    label: 'AI Service',
+    label: 'AI 서비스',
     basePrice: 12000000,
     description: 'LLM 및 생성형 AI 모델이 통합된 지능형 서비스',
     iconName: 'BrainCircuit'
   },
   {
     id: AppCategory.ECOMMERCE,
-    label: 'E-Commerce',
+    label: '이커머스',
     basePrice: 8000000,
     description: '상품 관리, 결제, 배송 추적이 포함된 쇼핑몰',
     iconName: 'ShoppingCart'
   },
   {
     id: AppCategory.SOCIAL,
-    label: 'Community',
+    label: '커뮤니티',
     basePrice: 10000000,
     description: '실시간 채팅, 피드, 유저 인터랙션 플랫폼',
     iconName: 'Users'
   },
   {
     id: AppCategory.ENTERPRISE,
-    label: 'Enterprise',
+    label: '엔터프라이즈',
     basePrice: 20000000,
     description: '사내 업무 효율화 및 대규모 데이터 관리 시스템',
     iconName: 'Building2'

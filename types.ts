@@ -6,25 +6,6 @@ export enum AppCategory {
   ENTERPRISE = 'Enterprise Solution'
 }
 
-export interface Feature {
-  id: string;
-  name: string;
-  description: string;
-  baseCost: number;
-  icon?: string;
-}
-
-export interface ProjectRequest {
-  appName: string;
-  category: AppCategory;
-  selectedFeatures: string[]; // List of Feature IDs
-  estimatedPrice: number;
-  clientName: string;
-  clientEmail: string;
-  description: string;
-  contact?: string;
-}
-
 export interface CategoryDetails {
   id: AppCategory;
   label: string;
@@ -38,6 +19,16 @@ export interface PortfolioItem {
   title: string;
   description: string;
   imageUrl: string;
+  projectUrl?: string; // New: Link to sample site
+  category: AppCategory; // New: Category classification
   tags: string[];
   createdAt?: any;
+}
+
+export interface Feature {
+  id: string;
+  name: string;
+  description: string;
+  baseCost: number;
+  icon: string;
 }

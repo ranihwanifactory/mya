@@ -46,9 +46,13 @@ const Admin: React.FC = () => {
       if (e.code === 'auth/popup-closed-by-user') {
         errorMsg = "로그인 창이 닫혔습니다. 다시 시도해주세요.";
       } else if (e.code === 'auth/unauthorized-domain') {
-        errorMsg = "도메인 권한 오류: Firebase 콘솔에서 현재 도메인을 승인해야 합니다.";
+        errorMsg = "도메인 권한 오류: Firebase 콘솔의 Authentication > Settings > Authorized domains 에 현재 도메인을 추가해주세요.";
       } else if (e.code === 'auth/popup-blocked') {
         errorMsg = "팝업이 차단되었습니다. 브라우저 설정을 확인해주세요.";
+      } else if (e.code === 'auth/operation-not-allowed') {
+        errorMsg = "Google 로그인이 활성화되지 않았습니다. Firebase 콘솔 > Authentication > Sign-in method 에서 Google을 사용 설정해주세요.";
+      } else if (e.code === 'auth/cancelled-popup-request') {
+        errorMsg = "팝업 요청이 취소되었습니다. 여러 번 클릭하지 마세요.";
       }
       
       setLoginError(errorMsg);
@@ -111,7 +115,7 @@ const Admin: React.FC = () => {
           {loginError && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3 text-left">
               <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-400">{loginError}</p>
+              <p className="text-sm text-red-400 font-medium break-keep">{loginError}</p>
             </div>
           )}
 
