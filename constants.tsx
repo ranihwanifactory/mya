@@ -1,69 +1,55 @@
 
 import { AppCategory, CategoryDetails, Feature } from './types';
-import { ShoppingCart, Rocket, Users, BrainCircuit, Building2, Smartphone, ShieldCheck, Globe, CreditCard, MessageSquare, Film, LayoutTemplate, ClipboardList, MoreHorizontal } from 'lucide-react';
+import { ShoppingCart, Rocket, Users, BrainCircuit, Building2, Smartphone, ShieldCheck, Globe, CreditCard, MessageSquare, Film, LayoutTemplate, ClipboardList, MoreHorizontal, Gamepad2 } from 'lucide-react';
 
 export const APP_CATEGORIES: CategoryDetails[] = [
   {
-    id: AppCategory.MVP,
-    label: 'MVP 스타트업',
-    basePrice: 5000000, // KRW
-    description: '핵심 기능에 집중한 빠른 시장 검증용 앱',
+    id: AppCategory.STARTUP,
+    label: '스타트업',
+    basePrice: 5000000,
+    description: '핵심 기능에 집중한 빠른 시장 검증용 MVP 앱',
     iconName: 'Rocket'
   },
   {
     id: AppCategory.HOMEPAGE,
     label: '홈페이지',
     basePrice: 3000000,
-    description: '기업 브랜딩, 포트폴리오, 랜딩 페이지 제작',
+    description: '기업 브랜딩, 포트폴리오, 반응형 웹사이트',
     iconName: 'LayoutTemplate'
   },
   {
-    id: AppCategory.AI_TOOL,
-    label: 'AI 서비스',
+    id: AppCategory.AI_SERVICE,
+    label: 'AI생성서비스',
     basePrice: 12000000,
-    description: 'LLM 및 생성형 AI 모델이 통합된 지능형 서비스',
+    description: 'ChatGPT, 이미지 생성 등 AI 모델 연동 서비스',
     iconName: 'BrainCircuit'
   },
   {
     id: AppCategory.ECOMMERCE,
     label: '이커머스',
     basePrice: 8000000,
-    description: '상품 관리, 결제, 배송 추적이 포함된 쇼핑몰',
+    description: '쇼핑몰, 결제, 배송, 상품 관리 시스템',
     iconName: 'ShoppingCart'
   },
   {
-    id: AppCategory.ORDER_SYSTEM,
-    label: '주문 시스템',
-    basePrice: 10000000,
-    description: '키오스크, 테이블 오더, 예약/웨이팅 관리',
-    iconName: 'ClipboardList'
-  },
-  {
     id: AppCategory.SOCIAL,
-    label: '커뮤니티',
+    label: '소셜커뮤니티',
     basePrice: 10000000,
-    description: '실시간 채팅, 피드, 유저 인터랙션 플랫폼',
+    description: 'SNS, 채팅, 게시판, 커뮤니티 플랫폼',
     iconName: 'Users'
   },
   {
-    id: AppCategory.ENTERTAINMENT,
-    label: '엔터테인먼트',
+    id: AppCategory.GAME,
+    label: '게임',
     basePrice: 15000000,
-    description: '동영상 스트리밍, 웹툰, 게임, 팬덤 플랫폼',
-    iconName: 'Film'
+    description: '캐주얼 게임, 인터랙티브 컨텐츠, 게이미피케이션',
+    iconName: 'Gamepad2'
   },
   {
-    id: AppCategory.ENTERPRISE,
-    label: '엔터프라이즈',
-    basePrice: 20000000,
-    description: '사내 업무 효율화 및 대규모 데이터 관리 시스템',
-    iconName: 'Building2'
-  },
-  {
-    id: AppCategory.UTILITY,
-    label: '기타 기능 앱',
+    id: AppCategory.ETC,
+    label: '기타',
     basePrice: 5000000,
-    description: '계산기, 날씨, 일정 등 특정 유틸리티 기능 구현',
+    description: '유틸리티, 도구, 기타 맞춤형 기능 개발',
     iconName: 'MoreHorizontal'
   }
 ];
@@ -113,8 +99,7 @@ export const AVAILABLE_FEATURES: Feature[] = [
   }
 ];
 
-// Helper to map icon names to components if needed dynamically, 
-// though direct usage in component mapping is often cleaner.
+// Helper to map icon names to components if needed dynamically
 export const getIcon = (name: string, props: any) => {
     switch(name) {
         case 'Rocket': return <Rocket {...props} />;
@@ -131,6 +116,7 @@ export const getIcon = (name: string, props: any) => {
         case 'LayoutTemplate': return <LayoutTemplate {...props} />;
         case 'ClipboardList': return <ClipboardList {...props} />;
         case 'MoreHorizontal': return <MoreHorizontal {...props} />;
+        case 'Gamepad2': return <Gamepad2 {...props} />;
         default: return <Rocket {...props} />;
     }
 }

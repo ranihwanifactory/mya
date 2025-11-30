@@ -21,7 +21,7 @@ const Admin: React.FC = () => {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [projectUrl, setProjectUrl] = useState('');
-  const [category, setCategory] = useState<AppCategory>(AppCategory.MVP);
+  const [category, setCategory] = useState<AppCategory>(AppCategory.STARTUP);
   const [tags, setTags] = useState('');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,7 +92,7 @@ const Admin: React.FC = () => {
     setDescription('');
     setImageUrl('');
     setProjectUrl('');
-    setCategory(AppCategory.MVP);
+    setCategory(AppCategory.STARTUP);
     setTags('');
   };
 

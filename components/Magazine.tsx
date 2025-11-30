@@ -156,7 +156,8 @@ const Magazine: React.FC = () => {
                 {featuredItem && activeCategory === 'ALL' && !searchQuery && (
                 <div className="mb-16 group relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-brand-500/30 transition-all duration-500 shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-0">
-                        <div className="relative h-64 md:h-auto overflow-hidden">
+                        {/* Changed: Enforce 16:9 aspect ratio */}
+                        <div className="relative w-full aspect-video overflow-hidden">
                             {featuredItem.imageUrl ? (
                                 <img 
                                     src={featuredItem.imageUrl} 

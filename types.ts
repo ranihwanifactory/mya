@@ -1,14 +1,12 @@
 
 export enum AppCategory {
-  MVP = 'MVP Startups',
-  ECOMMERCE = 'E-Commerce',
-  SOCIAL = 'Social Network',
-  AI_TOOL = 'AI Native Tool',
-  ENTERPRISE = 'Enterprise Solution',
-  ENTERTAINMENT = 'Entertainment',
+  STARTUP = 'Startup',
   HOMEPAGE = 'Homepage',
-  ORDER_SYSTEM = 'Order System',
-  UTILITY = 'Utility'
+  AI_SERVICE = 'AI Service',
+  ECOMMERCE = 'E-Commerce',
+  SOCIAL = 'Social Community',
+  GAME = 'Game',
+  ETC = 'Etc'
 }
 
 export interface CategoryDetails {
