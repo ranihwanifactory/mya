@@ -40,8 +40,25 @@ const Magazine: React.FC = () => {
     });
   }, [items, searchQuery, activeCategory]);
 
-  const featuredItem = filteredItems.length > 0 ? filteredItems[0] : null;
-  const gridItems = filteredItems.length > 0 ? filteredItems.slice(1) : [];
+  const { featuredItem, gridItems } = useMemo(() => {
+    if (filteredItems.length === 0) return { featuredItem: null, gridItems: [] };
+
+    // 1. Try to find a featured item within the filtered list
+    const explicitFeaturedIndex = filteredItems.findIndex(item => item.isFeatured);
+
+    if (explicitFeaturedIndex !== -1) {
+        const featured = filteredItems[explicitFeaturedIndex];
+        const rest = [...filteredItems];
+        rest.splice(explicitFeaturedIndex, 1);
+        return { featuredItem: featured, gridItems: rest };
+    }
+
+    // 2. Fallback: Use the first item as featured if no explicit featured item exists
+    return {
+        featuredItem: filteredItems[0],
+        gridItems: filteredItems.slice(1)
+    };
+  }, [filteredItems]);
 
   if (loading) {
     return (
@@ -169,7 +186,7 @@ const Magazine: React.FC = () => {
                                     <ImageOff className="w-12 h-12 text-slate-600" />
                                 </div>
                             )}
-                            <div className="absolute top-4 left-4 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            <div className="absolute top-4 left-4 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
                                 추천작 (Featured)
                             </div>
                         </div>
@@ -212,9 +229,8 @@ const Magazine: React.FC = () => {
 
                 {/* Grid Layout */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {/* If we are filtering, show all items in grid including the first one to avoid confusion, 
-                        else if showing featured, skip the first one */}
-                    {(activeCategory === 'ALL' && !searchQuery ? gridItems : filteredItems).map((item) => (
+                    {/* Render remaining items */}
+                    {gridItems.map((item) => (
                         <div key={item.id} className="flex flex-col group">
                             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-slate-900 border border-slate-800">
                                 {item.imageUrl ? (

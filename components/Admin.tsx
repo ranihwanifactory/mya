@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, loginWithGoogle, logout, addPortfolioItem, updatePortfolioItem, deletePortfolioItem, getPortfolioItems } from '../services/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { ShieldAlert, ShieldCheck, LogOut, Plus, Image, Loader2, Link as LinkIcon, Layers, AlertCircle, Edit2, Trash2, X, RefreshCw } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, LogOut, Plus, Image, Loader2, Link as LinkIcon, Layers, AlertCircle, Edit2, Trash2, X, RefreshCw, Star } from 'lucide-react';
 import { PortfolioItem, AppCategory } from '../types';
 import { APP_CATEGORIES } from '../constants';
 
@@ -23,6 +23,7 @@ const Admin: React.FC = () => {
   const [projectUrl, setProjectUrl] = useState('');
   const [category, setCategory] = useState<AppCategory>(AppCategory.STARTUP);
   const [tags, setTags] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
@@ -94,6 +95,7 @@ const Admin: React.FC = () => {
     setProjectUrl('');
     setCategory(AppCategory.STARTUP);
     setTags('');
+    setIsFeatured(false);
   };
 
   const handleEdit = (item: PortfolioItem) => {
@@ -104,6 +106,7 @@ const Admin: React.FC = () => {
     setProjectUrl(item.projectUrl || '');
     setCategory(item.category);
     setTags(item.tags.join(', '));
+    setIsFeatured(item.isFeatured || false);
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -134,7 +137,8 @@ const Admin: React.FC = () => {
       imageUrl,
       projectUrl,
       category,
-      tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+      tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
+      isFeatured
     };
 
     let result;
@@ -337,6 +341,22 @@ const Admin: React.FC = () => {
                         placeholder="상세 설명..."
                       />
                     </div>
+                    
+                    <div className="flex items-center gap-2 py-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsFeatured(!isFeatured)}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
+                                isFeatured 
+                                ? 'bg-brand-500/10 border-brand-500 text-brand-400' 
+                                : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                            }`}
+                        >
+                            <Star className={`w-4 h-4 ${isFeatured ? 'fill-brand-400' : ''}`} />
+                            <span className="text-sm font-medium">추천작으로 설정</span>
+                        </button>
+                        {isFeatured && <span className="text-xs text-brand-400 animate-fade-in">메인 화면 최상단에 노출됩니다.</span>}
+                    </div>
 
                     {message && (
                       <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
@@ -385,8 +405,8 @@ const Admin: React.FC = () => {
                         </div>
                     ) : (
                         portfolioList.map((item) => (
-                            <div key={item.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex gap-4 group hover:border-brand-500/30 transition-all">
-                                <div className="w-24 h-24 bg-slate-950 rounded-lg overflow-hidden shrink-0 border border-slate-800">
+                            <div key={item.id} className={`bg-slate-900 border rounded-xl p-4 flex gap-4 group transition-all ${item.isFeatured ? 'border-brand-500/50 shadow-lg shadow-brand-900/10' : 'border-slate-800 hover:border-brand-500/30'}`}>
+                                <div className="w-24 h-24 bg-slate-950 rounded-lg overflow-hidden shrink-0 border border-slate-800 relative">
                                     {item.imageUrl ? (
                                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                                     ) : (
@@ -394,10 +414,18 @@ const Admin: React.FC = () => {
                                             <Image className="w-6 h-6 text-slate-700" />
                                         </div>
                                     )}
+                                    {item.isFeatured && (
+                                        <div className="absolute top-1 left-1 bg-brand-500 text-white p-1 rounded-md shadow-md">
+                                            <Star className="w-3 h-3 fill-white" />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-start justify-between mb-1">
-                                        <h4 className="text-lg font-bold text-white truncate pr-4">{item.title}</h4>
+                                        <div className="flex items-center gap-2 truncate pr-4">
+                                            <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                                            {item.isFeatured && <span className="text-[10px] bg-brand-900/50 text-brand-300 px-1.5 py-0.5 rounded border border-brand-500/30">추천작</span>}
+                                        </div>
                                         <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap">
                                             {APP_CATEGORIES.find(c => c.id === item.category)?.label || item.category}
                                         </span>

@@ -25,6 +25,7 @@ export interface PortfolioItem {
   projectUrl?: string; // New: Link to sample site
   category: AppCategory; // New: Category classification
   tags: string[];
+  isFeatured?: boolean; // New: Featured flag
   createdAt?: any;
 }
 
