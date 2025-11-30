@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { PortfolioItem } from '../types';
 
@@ -45,6 +45,30 @@ export const addPortfolioItem = async (data: PortfolioItem) => {
     return { success: true, id: docRef.id };
   } catch (e) {
     console.error("Error adding portfolio: ", e);
+    return { success: false, error: e };
+  }
+};
+
+export const updatePortfolioItem = async (id: string, data: Partial<PortfolioItem>) => {
+  try {
+    const docRef = doc(db, "portfolios", id);
+    await updateDoc(docRef, {
+      ...data,
+      updatedAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (e) {
+    console.error("Error updating portfolio: ", e);
+    return { success: false, error: e };
+  }
+};
+
+export const deletePortfolioItem = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, "portfolios", id));
+    return { success: true };
+  } catch (e) {
+    console.error("Error deleting portfolio: ", e);
     return { success: false, error: e };
   }
 };

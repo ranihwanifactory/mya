@@ -1,5 +1,6 @@
+
 import { AppCategory, CategoryDetails, Feature } from './types';
-import { ShoppingCart, Rocket, Users, BrainCircuit, Building2, Smartphone, ShieldCheck, Globe, CreditCard, MessageSquare } from 'lucide-react';
+import { ShoppingCart, Rocket, Users, BrainCircuit, Building2, Smartphone, ShieldCheck, Globe, CreditCard, MessageSquare, Film, LayoutTemplate, ClipboardList, MoreHorizontal } from 'lucide-react';
 
 export const APP_CATEGORIES: CategoryDetails[] = [
   {
@@ -8,6 +9,13 @@ export const APP_CATEGORIES: CategoryDetails[] = [
     basePrice: 5000000, // KRW
     description: '핵심 기능에 집중한 빠른 시장 검증용 앱',
     iconName: 'Rocket'
+  },
+  {
+    id: AppCategory.HOMEPAGE,
+    label: '홈페이지',
+    basePrice: 3000000,
+    description: '기업 브랜딩, 포트폴리오, 랜딩 페이지 제작',
+    iconName: 'LayoutTemplate'
   },
   {
     id: AppCategory.AI_TOOL,
@@ -24,6 +32,13 @@ export const APP_CATEGORIES: CategoryDetails[] = [
     iconName: 'ShoppingCart'
   },
   {
+    id: AppCategory.ORDER_SYSTEM,
+    label: '주문 시스템',
+    basePrice: 10000000,
+    description: '키오스크, 테이블 오더, 예약/웨이팅 관리',
+    iconName: 'ClipboardList'
+  },
+  {
     id: AppCategory.SOCIAL,
     label: '커뮤니티',
     basePrice: 10000000,
@@ -31,11 +46,25 @@ export const APP_CATEGORIES: CategoryDetails[] = [
     iconName: 'Users'
   },
   {
+    id: AppCategory.ENTERTAINMENT,
+    label: '엔터테인먼트',
+    basePrice: 15000000,
+    description: '동영상 스트리밍, 웹툰, 게임, 팬덤 플랫폼',
+    iconName: 'Film'
+  },
+  {
     id: AppCategory.ENTERPRISE,
     label: '엔터프라이즈',
     basePrice: 20000000,
     description: '사내 업무 효율화 및 대규모 데이터 관리 시스템',
     iconName: 'Building2'
+  },
+  {
+    id: AppCategory.UTILITY,
+    label: '기타 기능 앱',
+    basePrice: 5000000,
+    description: '계산기, 날씨, 일정 등 특정 유틸리티 기능 구현',
+    iconName: 'MoreHorizontal'
   }
 ];
 
@@ -98,6 +127,10 @@ export const getIcon = (name: string, props: any) => {
         case 'MessageSquare': return <MessageSquare {...props} />;
         case 'Globe': return <Globe {...props} />;
         case 'Smartphone': return <Smartphone {...props} />;
+        case 'Film': return <Film {...props} />;
+        case 'LayoutTemplate': return <LayoutTemplate {...props} />;
+        case 'ClipboardList': return <ClipboardList {...props} />;
+        case 'MoreHorizontal': return <MoreHorizontal {...props} />;
         default: return <Rocket {...props} />;
     }
 }

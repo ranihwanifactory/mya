@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { auth, loginWithGoogle, logout, addPortfolioItem } from '../services/firebase';
+import { auth, loginWithGoogle, logout, addPortfolioItem, updatePortfolioItem, deletePortfolioItem, getPortfolioItems } from '../services/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { ShieldAlert, ShieldCheck, LogOut, Plus, Image, Loader2, Link as LinkIcon, Layers, AlertCircle } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, LogOut, Plus, Image, Loader2, Link as LinkIcon, Layers, AlertCircle, Edit2, Trash2, X, RefreshCw } from 'lucide-react';
 import { PortfolioItem, AppCategory } from '../types';
 import { APP_CATEGORIES } from '../constants';
 
@@ -16,22 +16,43 @@ const Admin: React.FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Form State
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [projectUrl, setProjectUrl] = useState('');
   const [category, setCategory] = useState<AppCategory>(AppCategory.MVP);
   const [tags, setTags] = useState('');
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+
+  // List State
+  const [portfolioList, setPortfolioList] = useState<PortfolioItem[]>([]);
+  const [isFetchingList, setIsFetchingList] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+      if (currentUser && currentUser.email === ADMIN_EMAIL) {
+        fetchPortfolioList();
+      }
     });
     return () => unsubscribe();
   }, []);
+
+  const fetchPortfolioList = async () => {
+    setIsFetchingList(true);
+    try {
+      const items = await getPortfolioItems();
+      setPortfolioList(items);
+    } catch (e) {
+      console.error("Failed to fetch list", e);
+    } finally {
+      setIsFetchingList(false);
+    }
+  };
 
   const handleLogin = async () => {
     setLoginError(null);
@@ -65,12 +86,49 @@ const Admin: React.FC = () => {
     setUser(null);
   };
 
+  const resetForm = () => {
+    setEditingId(null);
+    setTitle('');
+    setDescription('');
+    setImageUrl('');
+    setProjectUrl('');
+    setCategory(AppCategory.MVP);
+    setTags('');
+  };
+
+  const handleEdit = (item: PortfolioItem) => {
+    setEditingId(item.id || null);
+    setTitle(item.title);
+    setDescription(item.description);
+    setImageUrl(item.imageUrl);
+    setProjectUrl(item.projectUrl || '');
+    setCategory(item.category);
+    setTags(item.tags.join(', '));
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("정말로 이 포트폴리오를 삭제하시겠습니까?")) return;
+    
+    try {
+      await deletePortfolioItem(id);
+      setMessage({ type: 'success', text: '삭제되었습니다.' });
+      fetchPortfolioList();
+      if (editingId === id) resetForm();
+    } catch (e) {
+      setMessage({ type: 'error', text: '삭제 중 오류가 발생했습니다.' });
+    }
+    
+    setTimeout(() => setMessage(null), 3000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || user.email !== ADMIN_EMAIL) return;
 
     setIsSubmitting(true);
-    const newItem: PortfolioItem = {
+    const itemData: PortfolioItem = {
       title,
       description,
       imageUrl,
@@ -79,21 +137,22 @@ const Admin: React.FC = () => {
       tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
     };
 
-    const result = await addPortfolioItem(newItem);
+    let result;
+    if (editingId) {
+      result = await updatePortfolioItem(editingId, itemData);
+    } else {
+      result = await addPortfolioItem(itemData);
+    }
     
     if (result.success) {
-      setMessage({ type: 'success', text: '포트폴리오가 성공적으로 등록되었습니다.' });
-      setTitle('');
-      setDescription('');
-      setImageUrl('');
-      setProjectUrl('');
-      setTags('');
+      setMessage({ type: 'success', text: editingId ? '수정되었습니다.' : '등록되었습니다.' });
+      resetForm();
+      fetchPortfolioList();
     } else {
-      setMessage({ type: 'error', text: '등록 중 오류가 발생했습니다.' });
+      setMessage({ type: 'error', text: '작업 중 오류가 발생했습니다.' });
     }
     setIsSubmitting(false);
     
-    // Clear message after 3 seconds
     setTimeout(() => setMessage(null), 3000);
   };
 
@@ -161,7 +220,9 @@ const Admin: React.FC = () => {
   // Admin Dashboard
   return (
     <div className="min-h-screen bg-slate-950 pb-20 pt-24 px-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-brand-500/20 rounded-lg flex items-center justify-center text-brand-500">
@@ -181,123 +242,199 @@ const Admin: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <Plus className="w-5 h-5 text-brand-500" />
-            새 포트폴리오 등록
-          </h2>
+        <div className="grid lg:grid-cols-3 gap-8">
+            
+            {/* Left Column: Form */}
+            <div className="lg:col-span-1">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl sticky top-24">
+                  <h2 className="text-xl font-bold text-white mb-6 flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                        {editingId ? <Edit2 className="w-5 h-5 text-brand-500" /> : <Plus className="w-5 h-5 text-brand-500" />}
+                        {editingId ? '포트폴리오 수정' : '새 포트폴리오 등록'}
+                    </span>
+                    {editingId && (
+                        <button onClick={resetForm} className="text-xs text-slate-500 hover:text-white flex items-center gap-1">
+                            <X className="w-3 h-3" /> 취소
+                        </button>
+                    )}
+                  </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">프로젝트 제목</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors"
-                    placeholder="예: 배달의민족 리뉴얼 프로젝트"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">카테고리</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
-                    <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value as AppCategory)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors appearance-none"
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">제목</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors"
+                        placeholder="프로젝트 제목"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">카테고리</label>
+                      <div className="relative">
+                        <select
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value as AppCategory)}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors appearance-none"
+                        >
+                            {APP_CATEGORIES.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.label}</option>
+                            ))}
+                        </select>
+                        <Layers className="absolute right-3 top-2.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">이미지 URL</label>
+                      <input 
+                        type="url" 
+                        required
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    {imageUrl && (
+                         <div className="h-32 bg-slate-950 border border-slate-800 rounded-lg overflow-hidden">
+                            <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">링크 URL</label>
+                      <input 
+                        type="url" 
+                        value={projectUrl}
+                        onChange={(e) => setProjectUrl(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors"
+                        placeholder="https://..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">태그</label>
+                      <input 
+                        type="text" 
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors"
+                        placeholder="React, AI"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 mb-1">설명</label>
+                      <textarea 
+                        required
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors h-24 resize-none"
+                        placeholder="상세 설명..."
+                      />
+                    </div>
+
+                    {message && (
+                      <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                        {message.type === 'success' ? <ShieldCheck className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
+                        {message.text}
+                      </div>
+                    )}
+
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`w-full py-3 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                          editingId ? 'bg-brand-600 hover:bg-brand-500' : 'bg-white text-slate-900 hover:bg-slate-200'
+                      }`}
                     >
-                        {APP_CATEGORIES.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.label}</option>
-                        ))}
-                    </select>
-                  </div>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          처리 중...
+                        </>
+                      ) : (
+                        editingId ? '수정사항 저장' : '등록하기'
+                      )}
+                    </button>
+                  </form>
                 </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">썸네일 이미지 URL</label>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <input 
-                    type="url" 
-                    required
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors"
-                    placeholder="https://example.com/image.jpg"
-                  />
+            {/* Right Column: List */}
+            <div className="lg:col-span-2">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-bold text-white">등록된 포트폴리오 ({portfolioList.length})</h3>
+                    <button 
+                        onClick={fetchPortfolioList} 
+                        className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
+                        title="새로고침"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${isFetchingList ? 'animate-spin' : ''}`} />
+                    </button>
                 </div>
-                <div className="w-32 h-12 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-center overflow-hidden">
-                  {imageUrl ? (
-                    <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <Image className="w-5 h-5 text-slate-600" />
-                  )}
+
+                <div className="space-y-4">
+                    {portfolioList.length === 0 ? (
+                        <div className="text-center py-12 bg-slate-900/50 rounded-2xl border border-slate-800 border-dashed">
+                            <p className="text-slate-500">등록된 포트폴리오가 없습니다.</p>
+                        </div>
+                    ) : (
+                        portfolioList.map((item) => (
+                            <div key={item.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex gap-4 group hover:border-brand-500/30 transition-all">
+                                <div className="w-24 h-24 bg-slate-950 rounded-lg overflow-hidden shrink-0 border border-slate-800">
+                                    {item.imageUrl ? (
+                                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <Image className="w-6 h-6 text-slate-700" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-start justify-between mb-1">
+                                        <h4 className="text-lg font-bold text-white truncate pr-4">{item.title}</h4>
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap">
+                                            {APP_CATEGORIES.find(c => c.id === item.category)?.label || item.category}
+                                        </span>
+                                    </div>
+                                    <p className="text-slate-400 text-sm line-clamp-2 mb-3">{item.description}</p>
+                                    
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex gap-2">
+                                            {item.projectUrl && (
+                                                <a href={item.projectUrl} target="_blank" rel="noreferrer" className="text-xs text-brand-400 hover:underline flex items-center gap-1">
+                                                    <LinkIcon className="w-3 h-3" /> Link
+                                                </a>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={() => handleEdit(item)}
+                                                className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                                                title="수정"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button 
+                                                onClick={() => item.id && handleDelete(item.id)}
+                                                className="p-2 text-slate-400 hover:text-red-400 bg-slate-800 hover:bg-red-900/30 rounded-lg transition-colors"
+                                                title="삭제"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
-              </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">샘플 사이트 URL</label>
-              <div className="relative">
-                <LinkIcon className="absolute left-3 top-3.5 w-5 h-5 text-slate-500" />
-                <input 
-                    type="url" 
-                    value={projectUrl}
-                    onChange={(e) => setProjectUrl(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors"
-                    placeholder="https://my-app-sample.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">태그 (쉼표로 구분)</label>
-              <input 
-                type="text" 
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors"
-                placeholder="React, Next.js, AI, E-Commerce"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">설명</label>
-              <textarea 
-                required
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-500 transition-colors h-32 resize-none"
-                placeholder="프로젝트에 대한 상세 설명을 입력하세요."
-              />
-            </div>
-
-            {message && (
-              <div className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                {message.type === 'success' ? <ShieldCheck className="w-5 h-5" /> : <ShieldAlert className="w-5 h-5" />}
-                {message.text}
-              </div>
-            )}
-
-            <button 
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  등록 중...
-                </>
-              ) : (
-                '포트폴리오 등록하기'
-              )}
-            </button>
-          </form>
         </div>
       </div>
     </div>
