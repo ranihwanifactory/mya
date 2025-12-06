@@ -33,7 +33,7 @@ function App() {
       
       <footer className="bg-slate-950 border-t border-slate-900 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
-          <p className="font-semibold text-slate-400">MYA (Make Your App)</p>
+          <p className="font-semibold text-slate-400">DreamLab (드림랩)</p>
           <p className="mt-2 mb-4">대구 달성군 구지면 국가산단북로 60길 59 디에이치웹연구소</p>
           <p className="mb-4">Tel: 010-7545-0038 | Email: hwanace@naver.com</p>
           <div className="flex justify-center gap-4">
@@ -62,7 +62,7 @@ function App() {
                 Admin
             </button>
           </div>
-          <p className="mt-8 opacity-50">© 2024 MYA. All rights reserved.</p>
+          <p className="mt-8 opacity-50">© 2024 DreamLab. All rights reserved.</p>
         </div>
       </footer>
     </div>

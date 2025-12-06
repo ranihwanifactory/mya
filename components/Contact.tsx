@@ -27,7 +27,7 @@ ${message}
       `.trim();
 
       // Open mail client
-      window.location.href = `mailto:hwanace@naver.com?subject=[MYA 문의] ${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+      window.location.href = `mailto:hwanace@naver.com?subject=[DreamLab 문의] ${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
       
       setIsSubmitting(false);
       setSubmitted(true);
@@ -51,7 +51,7 @@ ${message}
           <h2 className="text-2xl font-bold text-white mb-2">메일 앱이 실행되었습니다!</h2>
           <p className="text-slate-400 mb-8">
             메일 전송 버튼을 눌러 문의를 완료해주세요.<br/>
-            확인 후 빠르게 답변 드리겠습니다.
+            드림랩 연구원이 확인 후 빠르게 답변 드리겠습니다.
           </p>
           <button 
             onClick={() => setSubmitted(false)}
@@ -72,11 +72,11 @@ ${message}
           {/* Contact Info */}
           <div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              프로젝트 문의하기
+              프로젝트 의뢰하기
             </h1>
             <p className="text-lg text-slate-400 mb-12">
-              앱 개발에 대해 궁금한 점이 있으신가요?<br/>
-              디에이치웹연구소가 상세하게 상담해드립니다.
+              당신의 꿈을 실현할 준비가 되셨나요?<br/>
+              드림랩(DreamLab)이 상세하게 상담해드립니다.
             </p>
 
             <div className="space-y-8">
@@ -107,7 +107,7 @@ ${message}
                   <MapPin className="w-6 h-6 text-brand-500" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold mb-1">Office</h3>
+                  <h3 className="text-white font-bold mb-1">Laboratory</h3>
                   <p className="text-slate-400">대구 달성군 구지면 국가산단북로 60길 59</p>
                   <p className="text-slate-500">디에이치웹연구소</p>
                 </div>

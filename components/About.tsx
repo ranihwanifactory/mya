@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, Code2, Rocket, MapPin, Phone, Mail, Award, Zap } from 'lucide-react';
+import { Bot, Rocket, MapPin, Phone, Mail, Award, Zap, FlaskConical } from 'lucide-react';
 
 const About: React.FC = () => {
   return (
@@ -9,16 +9,16 @@ const About: React.FC = () => {
         {/* Hero Section */}
         <div className="text-center mb-20 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-sm font-medium mb-6">
-            <Rocket className="w-4 h-4" />
-            <span>AI-Powered Development Agency</span>
+            <FlaskConical className="w-4 h-4" />
+            <span>AI-Powered Dream Laboratory</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             상상을 현실로 만드는<br/>
-            <span className="text-brand-500">디에이치웹연구소</span>
+            <span className="text-brand-500">DreamLab</span>
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            DreamLab(드림랩)은 당신의 꿈을 실현시켜주는 연구소입니다.<br/>
             최첨단 AI 기술과 웹 마스터의 전문성이 만나 당신의 비즈니스에 날개를 달아드립니다.
-            단순한 앱 제작을 넘어 성공적인 비즈니스 파트너가 되겠습니다.
           </p>
         </div>
 
@@ -34,12 +34,12 @@ const About: React.FC = () => {
             <div className="text-center md:text-left">
               <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                 <h2 className="text-3xl font-bold text-white">김진환</h2>
-                <span className="px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded-full">AI Webmaster</span>
+                <span className="px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded-full">Chief Researcher</span>
               </div>
-              <p className="text-brand-400 font-medium mb-6">Chief Developer / CEO</p>
+              <p className="text-brand-400 font-medium mb-6">CEO / Head of Development</p>
               <p className="text-slate-400 mb-8 leading-relaxed max-w-xl">
                 "기술의 장벽 때문에 혁신적인 아이디어가 사장되지 않도록 돕겠습니다. 
-                AI를 활용한 고효율 개발 프로세스로 합리적인 비용과 최상의 퀄리티를 약속드립니다."
+                드림랩의 고효율 AI 개발 프로세스로 합리적인 비용과 최상의 퀄리티를 약속드립니다."
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -62,7 +62,7 @@ const About: React.FC = () => {
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <MapPin className="w-6 h-6 text-brand-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">오시는 길</h3>
+                <h3 className="text-xl font-bold text-white mb-3">연구소 위치</h3>
                 <p className="text-slate-400">
                     대구 달성군 구지면<br/>
                     국가산단북로 60길 59<br/>
@@ -74,7 +74,7 @@ const About: React.FC = () => {
                 <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <Award className="w-6 h-6 text-brand-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">전문 분야</h3>
+                <h3 className="text-xl font-bold text-white mb-3">연구 분야</h3>
                 <p className="text-slate-400">
                     MVP 앱 개발<br/>
                     AI 서비스 통합<br/>
@@ -88,8 +88,8 @@ const About: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">핵심 가치</h3>
                 <p className="text-slate-400">
-                    Speed (빠른 개발)<br/>
-                    Quality (고품질)<br/>
+                    Speed (빠른 실현)<br/>
+                    Quality (높은 품질)<br/>
                     Innovation (기술 혁신)
                 </p>
             </div>

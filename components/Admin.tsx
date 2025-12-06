@@ -173,7 +173,7 @@ const Admin: React.FC = () => {
             <ShieldAlert className="w-8 h-8 text-slate-400" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">관리자 로그인</h2>
-          <p className="text-slate-400 mb-8">MYA 포트폴리오 관리자 계정으로 로그인해주세요.</p>
+          <p className="text-slate-400 mb-8">DreamLab 포트폴리오 관리자 계정으로 로그인해주세요.</p>
           
           {loginError && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3 text-left">

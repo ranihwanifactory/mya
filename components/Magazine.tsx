@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { getPortfolioItems } from '../services/firebase';
 import { PortfolioItem, AppCategory } from '../types';
 import { APP_CATEGORIES } from '../constants';
-import { Loader2, ExternalLink, ImageOff, Search, ArrowUpRight, Sparkles, Filter, AlertTriangle } from 'lucide-react';
+import { Loader2, ExternalLink, ImageOff, Search, ArrowUpRight, Sparkles, Filter, AlertTriangle, FlaskConical } from 'lucide-react';
 
 const Magazine: React.FC = () => {
   const [items, setItems] = useState<PortfolioItem[]>([]);
@@ -94,14 +94,16 @@ const Magazine: React.FC = () => {
       {/* Magazine Header */}
       <div className="pt-32 pb-12 px-4 max-w-7xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/80 border border-slate-800 text-brand-300 text-xs font-medium mb-6 backdrop-blur-sm animate-fade-in-up">
-            <Sparkles className="w-3 h-3" />
-            <span>Premium App Showcase</span>
+            <FlaskConical className="w-3 h-3" />
+            <span>당신의 꿈을 연구합니다</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-4 font-serif">
-          Make Your <span className="text-brand-500">App</span>
+          Realize Your <span className="text-brand-500">Dream</span>
         </h1>
         <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-          AI 기술로 구현된 혁신적인 앱 포트폴리오를 탐색하세요.
+          당신의 꿈을 실현시켜주는 연구소, <span className="text-white font-semibold">DreamLab</span>에 오신 것을 환영합니다.
+          <br className="hidden md:block"/>
+          혁신적인 AI 기술로 당신의 아이디어를 현실로 만들어드립니다.
         </p>
       </div>
 
@@ -142,7 +144,7 @@ const Magazine: React.FC = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input 
                 type="text" 
-                placeholder="앱 검색..."
+                placeholder="프로젝트 검색..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-800 rounded-full pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors placeholder:text-slate-600"
@@ -218,7 +220,7 @@ const Magazine: React.FC = () => {
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 text-white font-semibold hover:text-brand-400 transition-colors w-fit group/btn"
                                 >
-                                    웹사이트 방문
+                                    연구 결과 보기
                                     <ArrowUpRight className="w-5 h-5 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" />
                                 </a>
                             )}
@@ -253,7 +255,7 @@ const Magazine: React.FC = () => {
                                         className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]"
                                     >
                                         <div className="bg-white text-slate-950 px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                            라이브 보기 <ExternalLink className="w-4 h-4" />
+                                            결과물 보기 <ExternalLink className="w-4 h-4" />
                                         </div>
                                     </a>
                                 )}

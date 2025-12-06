@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Menu, X } from 'lucide-react';
+import { Cpu, Menu, X, FlaskConical } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate?: (view: string) => void;
@@ -21,21 +21,21 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
             className="flex items-center gap-2 cursor-pointer group"
             onClick={() => handleNav('home')}
           >
-            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <span className="text-slate-950 font-bold text-xs tracking-tighter">MYA</span>
+            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-brand-500/20">
+              <FlaskConical className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-bold text-white tracking-tight">Make Your App</span>
+            <span className="text-lg font-bold text-white tracking-tight">DreamLab</span>
           </div>
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <button onClick={() => handleNav('home')} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">포트폴리오</button>
-            <button onClick={() => handleNav('about')} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">서비스 소개</button>
+            <button onClick={() => handleNav('about')} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">연구소 소개</button>
             <button 
               onClick={() => handleNav('contact')}
-              className="px-5 py-2 text-sm font-semibold text-slate-950 bg-white hover:bg-slate-200 rounded-full transition-colors"
+              className="px-5 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-500 rounded-full transition-colors shadow-lg shadow-brand-900/20"
             >
-              문의하기
+              프로젝트 의뢰
             </button>
           </div>
 
@@ -65,13 +65,13 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
               onClick={() => handleNav('about')}
               className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-md"
             >
-              서비스 소개
+              연구소 소개
             </button>
             <button 
               onClick={() => handleNav('contact')}
               className="block w-full text-left px-3 py-3 text-base font-medium text-brand-400 hover:text-brand-300 hover:bg-slate-800 rounded-md"
             >
-              문의하기
+              프로젝트 의뢰
             </button>
           </div>
         </div>
